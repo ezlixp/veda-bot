@@ -1,9 +1,19 @@
 {
-    "type": "module",
-    "lint-staged": {
-        "*.ts": "eslint --cache --fix",
-        "*.{ts,css,md}": "prettier --write"
+    "name": "veda-bot",
+    "version": "1.0.0",
+    "description": "This repository provides a rapid deployment template for building Discord bots using Discord.js version 14 with Typescript. It includes ready-to-use code for handling commands, events, and interactions, so you can get your bot up and running quickly.",
+    "homepage": "https://github.com/ezlixp/veda-bot#readme",
+    "bugs": {
+        "url": "https://github.com/ezlixp/veda-bot/issues"
     },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ezlixp/veda-bot.git"
+    },
+    "license": "Apache-2.0",
+    "author": "pixlze",
+    "type": "module",
+    "main": "index.ts",
     "scripts": {
         "prepare": "husky install",
         "lint": "eslint --cache --fix src",
@@ -33,5 +43,9 @@
         "typescript": "^5.1.6",
         "rimraf": "^5.0.1",
         "tsc-watch": "^6.0.4"
+    },
+    "lint-staged": {
+        "*.ts": "eslint --cache --fix",
+        "*.{ts,css,md}": "prettier --write"
     }
 }
