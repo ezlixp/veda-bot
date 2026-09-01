@@ -1,7 +1,7 @@
 import { BaseInteraction, Events } from "discord.js"
-import Event from "../templates/Event.js"
+import Event from "../core/templates/Event.js"
 import Services from "../services/Services.js"
-import { Command } from "../base/Command.js"
+import { Command } from "../core/base/Command.js"
 
 export default new Event({
     name: Events.InteractionCreate,
@@ -23,10 +23,18 @@ export default new Event({
                 await command.execute(interaction)
             } catch (error) {
                 console.error(error)
-                await interaction.reply({
-                    content: "There was an error while executing this command!",
-                    ephemeral: true,
-                })
+                try {
+                    await interaction.reply({
+                        content: "There was an error while executing this command!",
+                        ephemeral: true,
+                    })
+                } catch (error) {
+                    // cannot reply since the interaction was deferred, so follow up instead
+                    await interaction.followUp({
+                        content: "There was an error while executing this command!",
+                        ephemeral: true,
+                    })
+                }
             }
         } else if (interaction.isAutocomplete()) {
             if (!Services.Command.get(interaction.commandName)) return

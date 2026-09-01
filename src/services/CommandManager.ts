@@ -1,5 +1,5 @@
 import { Collection } from "discord.js"
-import { Command } from "../base/Command.js"
+import { Command } from "../core/base/Command.js"
 
 export class CommandManager {
     private readonly commands = new Collection<string, Command>()

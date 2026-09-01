@@ -3,6 +3,7 @@ import {
     ChatInputCommandInteraction,
     Collection,
     SlashCommandBuilder,
+    SlashCommandSubcommandsOnlyBuilder,
 } from "discord.js"
 import { SubCommand } from "./SubCommand.js"
 
@@ -15,7 +16,7 @@ export abstract class Command {
         this.subcommands.set(sub.name, sub)
     }
 
-    public build(): SlashCommandBuilder {
+    public build(): SlashCommandSubcommandsOnlyBuilder {
         const builder = new SlashCommandBuilder()
             .setName(this.name)
             .setDescription(this.description)
@@ -46,6 +47,7 @@ export abstract class Command {
                 return
             }
         }
+        // should not reach here
         await this.handle(interaction)
     }
 
