@@ -1,6 +1,7 @@
 import {
     AutocompleteInteraction,
     BaseInteraction,
+    EmbedBuilder,
     SlashCommandOptionsOnlyBuilder,
 } from "discord.js"
 import { PaginationCommand } from "../../core/base/PaginationCommand.js"
@@ -25,7 +26,13 @@ export class LeaderboardCommand extends PaginationCommand {
                     .setDescription("Which leaderboard to view?")
                     .setRequired(true)
                     .setAutocomplete(true),
-            ) as SlashCommandOptionsOnlyBuilder
+            )
+    }
+
+    protected override async createEmbed(interaction: BaseInteraction): Promise<EmbedBuilder> {
+        return (await super.createEmbed(interaction)).setURL(
+            `https://veda-utils.vercel.app/leaderboards?name=${encodeURIComponent(this.sessions.get(interaction.user.id)?.options.getString("leaderboard") || "")}`,
+        )
     }
 
     protected async getPaginationContent(
