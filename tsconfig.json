@@ -5,6 +5,7 @@
         "rootDir": "./src",
         "outDir": "./dist",
         "module": "nodenext",
-        "esModuleInterop": true
+        "esModuleInterop": true,
+        "experimentalDecorators": true
     }
 }

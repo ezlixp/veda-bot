@@ -3,9 +3,13 @@ import "dotenv/config"
 
 import { Client, IntentsBitField, Partials } from "discord.js"
 import { readdirSync } from "fs"
-import type Event from "./templates/Event.js"
+import type Event from "./core/templates/Event.js"
 import deployGlobalCommands from "./deployGlobalCommands.js"
+import Services from "./services/Services.js"
+import { LeaderboardCommand } from "./commands/leaderboard/LeaderboardCommand.js"
 const { TOKEN } = process.env
+
+Services.Command.register(new LeaderboardCommand())
 
 await deployGlobalCommands()
 

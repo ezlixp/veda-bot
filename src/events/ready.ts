@@ -1,5 +1,5 @@
-import { Events } from 'discord.js'
-import Event from '../templates/Event.js'
+import { Events } from "discord.js"
+import Event from "../core/templates/Event.js"
 
 export default new Event({
     name: Events.ClientReady,
@@ -7,5 +7,5 @@ export default new Event({
     execute(): void {
         // Runs when the bot logs in
         console.log(`Logged in as ${client.user?.tag as string}!`)
-    }
+    },
 })
