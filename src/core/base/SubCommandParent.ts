@@ -6,8 +6,9 @@ import {
     SlashCommandSubcommandsOnlyBuilder,
 } from "discord.js"
 import { SubCommand } from "./SubCommand.js"
+import { Command } from "./Command.js"
 
-export abstract class Command {
+export abstract class SubCommandParent extends Command {
     public abstract readonly name: string
     public abstract readonly description: string
     protected subcommands = new Collection<string, SubCommand>()

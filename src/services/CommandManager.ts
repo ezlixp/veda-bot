@@ -1,4 +1,5 @@
 import { Collection } from "discord.js"
+import { OptionsCommand } from "../core/base/OptionsCommand.js"
 import { Command } from "../core/base/Command.js"
 
 export class CommandManager {
@@ -6,7 +7,7 @@ export class CommandManager {
 
     constructor() {}
 
-    public register(...commands: Command[]): this {
+    public register(...commands: OptionsCommand[]): this {
         for (const cmd of commands) {
             this.commands.set(cmd.name, cmd)
         }

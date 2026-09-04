@@ -1,20 +1,15 @@
 import {
     AutocompleteInteraction,
     ChatInputCommandInteraction,
-    SlashCommandBuilder,
     SlashCommandOptionsOnlyBuilder,
+    SlashCommandSubcommandsOnlyBuilder,
 } from "discord.js"
 
 export abstract class Command {
     public abstract readonly name: string
     public abstract readonly description: string
 
-    public build(): SlashCommandOptionsOnlyBuilder {
-        const builder = new SlashCommandBuilder()
-            .setName(this.name)
-            .setDescription(this.description)
-        return builder
-    }
+    public abstract build(): SlashCommandOptionsOnlyBuilder | SlashCommandSubcommandsOnlyBuilder
 
     public async autocomplete(interaction: AutocompleteInteraction): Promise<void> {
         await this.handleAutocomplete(interaction)

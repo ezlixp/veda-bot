@@ -1,5 +1,10 @@
-export interface ILeaderboardNames {
-    leaderboardNames: string[]
+export interface ILeaderboard {
+    leaderboardId: string
+    leaderboardName: string
+    estimatedTimePerCompletionMinutes: number
+}
+export interface ILeaderboards {
+    leaderboards: ILeaderboard[]
 }
 
 export interface ILeaderboardEntry {

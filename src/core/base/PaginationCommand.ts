@@ -2,11 +2,13 @@ import {
     ActionRowBuilder,
     BaseInteraction,
     ButtonBuilder,
+    ButtonInteraction,
     ButtonStyle,
     ChatInputCommandInteraction,
     Colors,
     EmbedBuilder,
     ModalBuilder,
+    ModalSubmitInteraction,
     TextInputBuilder,
     TextInputStyle,
 } from "discord.js"
@@ -15,9 +17,11 @@ import {
     IPageTimeoutInfo,
     IPaginationContent,
 } from "../types/paginationCommand.js"
-import { Command } from "./Command.js"
+import { OptionsCommand } from "./OptionsCommand.js"
+import { buttonInteraction } from "../decorators/buttonInteraction.js"
+import { modalInteraction } from "../decorators/modalInteraction.js"
 
-export abstract class PaginationCommand extends Command {
+export abstract class PaginationCommand extends OptionsCommand {
     protected abstract readonly title: string
     protected readonly pageSize: number = 10
     protected readonly sessions: Map<string, IPageSessionInfo> = new Map()
@@ -52,20 +56,19 @@ export abstract class PaginationCommand extends Command {
         const maxPages = await this.calculateTotalPages(interaction)
         const userId = interaction.user.id
         const currentPage = this.currentPages.get(userId) ?? -1
-        const leaderboard = this.sessions.get(userId)?.options.getString("leaderboard") ?? ""
 
         const prevButton = new ButtonBuilder()
             .setLabel("\u25c4")
-            .setCustomId(`prev:${leaderboard}`)
+            .setCustomId(`${this.name}$prev`)
             .setStyle(ButtonStyle.Danger)
             .setDisabled(currentPage === 0)
         const pageSelector = new ButtonBuilder()
-            .setLabel(`Page: ${currentPage}/${maxPages}`)
-            .setCustomId("page_select")
+            .setLabel(`Page: ${currentPage + 1}/${maxPages}`)
+            .setCustomId(`${this.name}$page_select`)
             .setStyle(ButtonStyle.Danger)
         const nextButton = new ButtonBuilder()
             .setLabel("\u25ba")
-            .setCustomId(`next:${leaderboard}`)
+            .setCustomId(`${this.name}$next`)
             .setStyle(ButtonStyle.Danger)
             .setDisabled(currentPage >= maxPages - 1)
         return new ActionRowBuilder<ButtonBuilder>().addComponents([
@@ -77,7 +80,9 @@ export abstract class PaginationCommand extends Command {
 
     protected async createPageJumpModal(interaction: BaseInteraction) {
         const maxPages = await this.calculateTotalPages(interaction)
-        const modal = new ModalBuilder().setCustomId("page_select_modal").setTitle("Jump to Page")
+        const modal = new ModalBuilder()
+            .setCustomId(`${this.name}$page_select_modal`)
+            .setTitle("Jump to Page")
 
         const pageInput = new TextInputBuilder()
             .setCustomId("page_number_input")
@@ -100,18 +105,25 @@ export abstract class PaginationCommand extends Command {
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     protected getEmbedDescription(interaction: BaseInteraction, content: IPaginationContent) {
-        const page = 0
+        const page = this.currentPages.get(interaction.user.id) || 0
         content.entries.splice(0, page * this.pageSize)
         content.entries.splice(this.pageSize)
         return content.entries.map((e) => e.getRowString()).join("\n")
     }
-    protected startOrResetTimeout(userId: string) {
+    protected stopTimeout(userId: string) {
         const timeoutInfo = this.timeouts.get(userId)!
         clearTimeout(timeoutInfo.timeoutToken)
+    }
+    protected startOrResetTimeout(userId: string) {
+        const timeoutInfo = this.timeouts.get(userId)!
+        this.stopTimeout(userId)
 
         // eslint-disable-next-line @typescript-eslint/no-misused-promises
         const cancelToken = setTimeout(async () => {
             await timeoutInfo.message.edit({ components: [] })
+            this.sessions.delete(userId)
+            this.timeouts.delete(userId)
+            this.currentPages.delete(userId)
         }, 30000)
 
         timeoutInfo.timeoutToken = cancelToken
@@ -121,12 +133,63 @@ export abstract class PaginationCommand extends Command {
         await interaction.deferReply()
         this.sessions.set(interaction.user.id, { options: interaction.options })
         this.currentPages.set(interaction.user.id, 0)
-        const message = await interaction.editReply({
+        const message = await interaction.followUp({
             embeds: [await this.createEmbed(interaction)],
             components: [await this.createPaginationComponents(interaction)],
         })
         if (!this.timeouts.has("752610633580675176"))
             this.timeouts.set(interaction.user.id, { message: message })
         this.startOrResetTimeout("752610633580675176")
+    }
+
+    @buttonInteraction("prev")
+    protected async handlePrev(interaction: ButtonInteraction) {
+        await interaction.deferUpdate()
+        const userId = interaction.user.id
+        const currentPage = this.currentPages.get(userId)!
+        this.currentPages.set(userId, Math.max(currentPage - 1, 0))
+        await interaction.message.edit({
+            embeds: [await this.createEmbed(interaction)],
+            components: [await this.createPaginationComponents(interaction)],
+        })
+
+        this.startOrResetTimeout(userId)
+    }
+
+    @buttonInteraction("page_select")
+    protected async handlePageSelect(interaction: ButtonInteraction) {
+        await interaction.showModal(await this.createPageJumpModal(interaction))
+
+        this.stopTimeout(interaction.user.id)
+    }
+
+    @modalInteraction("page_select_modal")
+    protected async handlePageSelectSubmit(interaction: ModalSubmitInteraction) {
+        await interaction.deferUpdate()
+        const userId = interaction.user.id
+        const maxPage = (await this.calculateTotalPages(interaction)) - 1
+        const page = parseInt(interaction.fields.getField("page_number_input").value)
+        this.currentPages.set(userId, Math.max(Math.min(page - 1, maxPage), 0))
+        await interaction.message!.edit({
+            embeds: [await this.createEmbed(interaction)],
+            components: [await this.createPaginationComponents(interaction)],
+        })
+
+        this.startOrResetTimeout(userId)
+    }
+
+    @buttonInteraction("next")
+    protected async handleNext(interaction: ButtonInteraction) {
+        await interaction.deferUpdate()
+        const userId = interaction.user.id
+        const currentPage = this.currentPages.get(userId)!
+        const maxPage = (await this.calculateTotalPages(interaction)) - 1
+        this.currentPages.set(userId, Math.min(currentPage + 1, maxPage))
+        await interaction.message.edit({
+            embeds: [await this.createEmbed(interaction)],
+            components: [await this.createPaginationComponents(interaction)],
+        })
+
+        this.startOrResetTimeout(userId)
     }
 }

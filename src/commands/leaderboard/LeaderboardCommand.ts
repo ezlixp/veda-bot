@@ -51,7 +51,7 @@ export class LeaderboardCommand extends PaginationCommand {
         if (!this.choices || Date.now() - this.refreshedAt > 600000) {
             const options = await Services.Api.getLeaderboardNames()
             if (options) {
-                this.choices = options.leaderboardNames
+                this.choices = options.leaderboards.map((l) => l.leaderboardName)
                 this.refreshedAt = Date.now()
             }
         }
