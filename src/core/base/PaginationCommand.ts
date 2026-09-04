@@ -134,9 +134,9 @@ export abstract class PaginationCommand extends OptionsCommand {
             embeds: [await this.createEmbed(interaction)],
             components: [await this.createPaginationComponents(interaction)],
         })
-        if (!this.timeouts.has("752610633580675176"))
-            this.timeouts.set(interaction.user.id, { message: message })
-        this.startOrResetTimeout("752610633580675176")
+        await this.timeouts.get(interaction.user.id)?.message.edit({ components: [] })
+        this.timeouts.set(interaction.user.id, { message: message })
+        this.startOrResetTimeout(interaction.user.id)
     }
 
     @buttonInteraction("prev")
