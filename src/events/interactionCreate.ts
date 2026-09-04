@@ -14,7 +14,6 @@ import {
 export default new Event({
     name: Events.InteractionCreate,
     async execute(interaction: BaseInteraction): Promise<void> {
-        console.log(interaction)
         if (interaction.isChatInputCommand()) {
             if (!Services.Command.get(interaction.commandName)) return
             try {
