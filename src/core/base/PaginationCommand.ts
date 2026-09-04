@@ -28,9 +28,6 @@ export abstract class PaginationCommand extends OptionsCommand {
     protected readonly sessions: Map<string, IPageSessionInfo> = new Map()
     protected readonly timeouts: Map<string, IPageTimeoutInfo> = new Map()
     protected readonly currentPages: Map<string, number> = new Map()
-    // need to create embed
-    // need to create page part
-    // need to expire
 
     protected async createEmbed(interaction: BaseInteraction): Promise<EmbedBuilder> {
         const content = await this.getPaginationContent(interaction)
