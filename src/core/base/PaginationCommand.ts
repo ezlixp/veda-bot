@@ -10,6 +10,7 @@ import {
     ModalBuilder,
     ModalSubmitInteraction,
     TextInputBuilder,
+    TextInputModalData,
     TextInputStyle,
 } from "discord.js"
 import {
@@ -168,7 +169,10 @@ export abstract class PaginationCommand extends OptionsCommand {
         await interaction.deferUpdate()
         const userId = interaction.user.id
         const maxPage = (await this.calculateTotalPages(interaction)) - 1
-        const page = parseInt(interaction.fields.getField("page_number_input").value) || 0
+        const page =
+            parseInt(
+                (interaction.fields.getField("page_number_input") as TextInputModalData).value,
+            ) || 0
         this.currentPages.set(userId, Math.max(Math.min(page - 1, maxPage), 0))
         await interaction.message!.edit({
             embeds: [await this.createEmbed(interaction)],
