@@ -13,7 +13,7 @@
         "plugin:@typescript-eslint/recommended-requiring-type-checking"
     ],
     "parserOptions": {
-        "project": ["./tsconfig.json"]
+        "project": ["./veda-bot/tsconfig.json"]
     },
     "globals": {
         "client": "writable"
