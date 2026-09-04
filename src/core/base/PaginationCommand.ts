@@ -101,7 +101,6 @@ export abstract class PaginationCommand extends OptionsCommand {
         interaction: BaseInteraction,
     ): Promise<IPaginationContent>
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     protected getEmbedDescription(interaction: BaseInteraction, content: IPaginationContent) {
         const page = this.currentPages.get(interaction.user.id) || 0
         content.entries.splice(0, page * this.pageSize)
