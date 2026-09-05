@@ -11,6 +11,6 @@ export class LeaderboardPaginationEntry extends PaginationEntry {
         this.value = value
     }
     public override getRowString(): string {
-        return `${this.rank}. ${this.username}: ${this.value}`
+        return `[${this.rank}.](https://veda-utils.vercel.app/players/${this.username}) ${this.username}: ${this.value}`
     }
 }

@@ -7,9 +7,10 @@ import type Event from "./core/templates/Event.js"
 import deployGlobalCommands from "./deployGlobalCommands.js"
 import Services from "./services/Services.js"
 import { LeaderboardCommand } from "./commands/leaderboard/LeaderboardCommand.js"
+import { PlayerSearchCommand } from "./commands/PlayerSearchCommand.js"
 const { TOKEN } = process.env
 
-Services.Command.register(new LeaderboardCommand())
+Services.Command.register(new LeaderboardCommand(), new PlayerSearchCommand())
 
 await deployGlobalCommands()
 
@@ -32,8 +33,10 @@ const eventFiles: string[] = readdirSync("./events").filter(
 for (const file of eventFiles) {
     const event: Event = (await import(`./events/${file}`)).default as Event
     if (event.once) {
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         client.once(event.name, (...args) => event.execute(...args))
     } else {
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         client.on(event.name, (...args) => event.execute(...args))
     }
 }

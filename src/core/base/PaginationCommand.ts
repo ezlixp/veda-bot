@@ -13,11 +13,7 @@ import {
     TextInputModalData,
     TextInputStyle,
 } from "discord.js"
-import {
-    IPageSessionInfo,
-    IPageTimeoutInfo,
-    IPaginationContent,
-} from "../types/paginationCommand.js"
+import { IPageSessionInfo, IPageTimeoutInfo, IPaginationContent } from "../types/pagination.js"
 import { OptionsCommand } from "./OptionsCommand.js"
 import { buttonInteraction } from "../decorators/buttonInteraction.js"
 import { modalInteraction } from "../decorators/modalInteraction.js"

@@ -14,9 +14,24 @@ export interface ILeaderboardEntry {
     value: number
 }
 
+export interface IPlayerLeaderboardEntry {
+    leaderboardName: string
+    rank: number
+    value: number
+    estimatedPlaytimeMinutes: number
+}
+
 export interface ILeaderboardSnapshot {
     snapshotId: number
     leaderboardName: string
     fetchedAt: string
     entries: ILeaderboardEntry[]
+}
+
+export interface IPlayerSnapshot {
+    username: string
+    weight: number
+    totalCompletions: number
+    totalPlaytimeMinutes: number
+    entries: IPlayerLeaderboardEntry[]
 }

@@ -6,7 +6,7 @@ import {
 } from "discord.js"
 import { PaginationCommand } from "../../core/base/PaginationCommand.js"
 import Services from "../../services/Services.js"
-import { IPaginationContent } from "../../core/types/paginationCommand.js"
+import { IPaginationContent } from "../../core/types/pagination.js"
 import { LeaderboardPaginationEntry } from "./LeaderboardPaginationEntry.js"
 
 export class LeaderboardCommand extends PaginationCommand {
@@ -64,8 +64,8 @@ export class LeaderboardCommand extends PaginationCommand {
         }
         await interaction.respond(
             this.choices
-                .filter((o) => o.toLowerCase().startsWith(leaderboard?.toLowerCase() ?? ""))
-                .map((o) => ({ name: o, value: o })),
+                .filter((c) => c.toLowerCase().startsWith(leaderboard?.toLowerCase() ?? ""))
+                .map((c) => ({ name: c, value: c })),
         )
     }
 }
