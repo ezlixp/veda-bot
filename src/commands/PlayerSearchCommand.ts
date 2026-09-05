@@ -70,7 +70,7 @@ export class PlayerSearchCommand extends OptionsCommand {
                     justify: "center",
                     alignItems: "center",
                     backgroundColor: "rgba(31, 31, 31, 0.75)",
-                    border: "1px solid rgba(60, 60, 56, 0.5)",
+                    border: "2px solid rgba(60, 60, 56, 0.5)",
                     borderRadius: 4,
                     width: 330,
                     padding: "16px 12px",
